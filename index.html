@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Playbook 00 — Tư duy trước khi bắt đầu | VCS</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:#f0f4f8;color:#1a202c;min-height:100vh;padding-bottom:5rem}
+#app{max-width:740px;margin:0 auto;padding:0 1rem}
+/* Header */
+.pb-header{background:#1F3864;color:#fff;border-radius:0 0 16px 16px;padding:2rem 2rem 1.5rem;margin-bottom:1.25rem}
+.vcs-eyebrow{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:0.5rem}
+.pb-header h1{font-size:21px;font-weight:600;line-height:1.3;margin-bottom:0.4rem}
+.pb-header p{font-size:13px;color:rgba(255,255,255,0.65)}
+/* Progress nav */
+.progress-wrap{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:0.875rem 1rem;margin-bottom:1.25rem}
+.step-dots{display:flex;gap:4px;align-items:center;margin-bottom:0.6rem;overflow-x:auto;padding-bottom:4px}
+.step-dot{flex:0 0 auto;font-size:11px;padding:3px 10px;border-radius:20px;cursor:pointer;border:none;background:transparent;color:#a0aec0;font-family:inherit;transition:all 0.15s;white-space:nowrap}
+.step-dot:hover{color:#4a5568}
+.step-dot.s-active{background:#D5E8F0;color:#1F3864;font-weight:500}
+.step-dot.s-done{color:#2E75B6}
+.progress-track{height:3px;background:#e2e8f0;border-radius:2px}
+.progress-fill{height:3px;border-radius:2px;background:#2E75B6;transition:width 0.4s ease;width:12.5%}
+/* Step animations */
+.pb-step{animation:fadeUp 0.25s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+/* Section labels */
+.sec-badge{display:inline-block;background:#D5E8F0;color:#1F3864;font-size:11px;font-weight:600;letter-spacing:1px;padding:3px 10px;border-radius:20px;margin-bottom:0.625rem;text-transform:uppercase}
+.sec-title{font-size:19px;font-weight:600;color:#1a202c;margin-bottom:0.375rem;line-height:1.3}
+.sec-sub{font-size:14px;color:#4a5568;line-height:1.7;margin-bottom:1.25rem}
+/* Cards */
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:1.125rem 1.25rem;margin-bottom:0.875rem}
+/* Group cards for step 1 */
+.group-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.875rem;margin-bottom:0.875rem}
+@media(max-width:540px){.group-grid{grid-template-columns:1fr}}
+.group-card{background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;padding:1.125rem;cursor:default;transition:border-color 0.2s,background 0.2s}
+.group-card.sel{border-color:#f6c343;background:#fffbeb}
+.g-num{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;background:#1F3864;color:#fff;border-radius:50%;font-size:12px;font-weight:600;margin-bottom:0.625rem}
+.g-title{font-size:14px;font-weight:600;color:#1a202c;margin-bottom:0.375rem}
+.g-desc{font-size:13px;color:#4a5568;line-height:1.55;margin-bottom:0.625rem}
+.g-q{font-size:12px;color:#2E75B6;font-style:italic;border-left:3px solid #D5E8F0;padding-left:0.625rem;line-height:1.5;margin-bottom:0.75rem}
+.g-btn{font-size:12px;padding:4px 12px;border-radius:20px;border:1px solid #e2e8f0;background:transparent;cursor:pointer;color:#718096;font-family:inherit;transition:all 0.15s}
+.g-btn:hover{border-color:#2E75B6;color:#2E75B6}
+.g-btn.picked{background:#FEF3C7;border-color:#F59E0B;color:#92400E}
+/* Step 2: ratings */
+.rating-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:1.125rem 1.25rem;margin-bottom:0.75rem}
+.rc-top{display:flex;align-items:flex-start;gap:0.625rem;margin-bottom:0.375rem}
+.rc-num{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;background:#1F3864;color:#fff;border-radius:50%;font-size:11px;font-weight:600;flex-shrink:0;margin-top:1px}
+.rc-title{font-size:14px;font-weight:500;color:#1a202c;flex:1;line-height:1.4}
+.rc-score{font-size:18px;font-weight:700;color:#2E75B6;min-width:18px;text-align:right;margin-left:auto}
+.rc-desc{font-size:13px;color:#4a5568;line-height:1.55;margin-bottom:0.5rem}
+.rc-q{font-size:12px;color:#718096;font-style:italic;margin-bottom:0.625rem}
+.slider-wrap input[type=range]{width:100%;accent-color:#2E75B6;cursor:pointer}
+.slider-labels{display:flex;justify-content:space-between;font-size:10px;color:#a0aec0;margin-top:3px}
+.live-score{background:#D5E8F0;border-radius:10px;padding:0.75rem 1rem;text-align:center;margin-top:0.75rem}
+.ls-label{font-size:12px;color:#2E75B6;font-weight:500;margin-bottom:2px}
+.ls-val{font-size:22px;font-weight:700;color:#1F3864}
+/* Step 3: checklist */
+.cl-cols{display:grid;grid-template-columns:1fr 1fr;gap:0.875rem}
+@media(max-width:540px){.cl-cols{grid-template-columns:1fr}}
+.cl-col{background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;padding:1.125rem}
+.cl-col.c-good{border-color:#6EE7B7}
+.cl-col.c-risk{border-color:#FCA5A5}
+.cl-hdr{display:inline-block;font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;margin-bottom:0.875rem}
+.cl-hdr.good{background:#D1FAE5;color:#065F46}
+.cl-hdr.risk{background:#FEE2E2;color:#7F1D1D}
+.cl-item{display:flex;align-items:flex-start;gap:0.5rem;padding:0.5rem 0;border-bottom:1px solid #f0f4f8}
+.cl-item:last-child{border-bottom:none}
+.cl-item input[type=checkbox]{margin-top:2px;accent-color:#2E75B6;width:14px;height:14px;flex-shrink:0;cursor:pointer}
+.cl-item label{font-size:13px;color:#4a5568;line-height:1.5;cursor:pointer}
+/* Step 4: questions */
+.q-card{background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;padding:1.125rem 1.25rem;margin-bottom:0.75rem;transition:border-color 0.2s}
+.q-card.q-special{border-color:#2E75B6;background:#F0F7FF}
+.q-num{font-size:11px;font-weight:600;color:#a0aec0;letter-spacing:1px;text-transform:uppercase;margin-bottom:0.375rem}
+.q-num.sp{color:#2E75B6}
+.q-text{font-size:14px;font-weight:500;color:#1a202c;line-height:1.6;margin-bottom:0.625rem}
+.q-note{font-size:12px;color:#2E75B6;font-style:italic;margin-bottom:0.5rem}
+textarea{width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:0.625rem 0.75rem;font-size:13px;font-family:inherit;color:#4a5568;resize:vertical;min-height:72px;line-height:1.6;transition:border-color 0.15s}
+textarea:focus{outline:none;border-color:#2E75B6}
+/* Step 5: bo cuoc types */
+.bc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;margin-top:0.875rem}
+@media(max-width:580px){.bc-grid{grid-template-columns:1fr}}
+.bc-type{border-radius:12px;padding:1.125rem}
+.bc-type.t-gray{background:#F1F5F9;border:1.5px solid #E2E8F0}
+.bc-type.t-green{background:#F0FDF4;border:1.5px solid #86EFAC}
+.bc-type.t-red{background:#FFF1F2;border:1.5px solid #FECDD3}
+.bc-icon{font-size:22px;margin-bottom:0.5rem}
+.bc-title{font-size:13px;font-weight:600;margin-bottom:0.375rem}
+.bc-type.t-gray .bc-title{color:#475569}
+.bc-type.t-green .bc-title{color:#14532D}
+.bc-type.t-red .bc-title{color:#7F1D1D}
+.bc-desc{font-size:12px;line-height:1.55}
+.bc-type.t-gray .bc-desc{color:#64748B}
+.bc-type.t-green .bc-desc{color:#166534}
+.bc-type.t-red .bc-desc{color:#9F1239}
+.bc-tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;margin-top:0.625rem;font-weight:500}
+.bc-type.t-gray .bc-tag{background:#E2E8F0;color:#475569}
+.bc-type.t-green .bc-tag{background:#BBF7D0;color:#14532D}
+.bc-type.t-red .bc-tag{background:#FECDD3;color:#7F1D1D}
+/* Step 6: insights */
+.ins-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
+@media(max-width:520px){.ins-grid{grid-template-columns:1fr}}
+.ins-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:1.125rem}
+.ins-icon{font-size:20px;margin-bottom:0.5rem}
+.ins-title{font-size:13px;font-weight:600;color:#1F3864;margin-bottom:0.375rem}
+.ins-desc{font-size:13px;color:#4a5568;line-height:1.55}
+.ins-card.wide{grid-column:span 2}
+@media(max-width:520px){.ins-card.wide{grid-column:span 1}}
+/* Step 7: result */
+.result-score{background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;padding:1.5rem;text-align:center;margin-bottom:0.875rem}
+.rs-label{font-size:13px;color:#718096;margin-bottom:0.375rem}
+.rs-num{font-size:52px;font-weight:700;color:#1F3864;line-height:1}
+.rs-out{font-size:16px;color:#a0aec0}
+.rs-bar-track{height:10px;background:#e2e8f0;border-radius:5px;margin:1rem 0 0.375rem;overflow:hidden}
+.rs-bar-fill{height:10px;border-radius:5px;transition:width 1.2s ease}
+.rs-bar-labels{display:flex;justify-content:space-between;font-size:10px;color:#a0aec0}
+.result-card{border-radius:12px;padding:1.25rem 1.5rem;margin-bottom:0.875rem}
+.result-card.r-green{background:#F0FDF4;border:1.5px solid #86EFAC}
+.result-card.r-yellow{background:#FFFBEB;border:1.5px solid #FCD34D}
+.result-card.r-red{background:#FFF1F2;border:1.5px solid #FECDD3}
+.r-icon{font-size:32px;margin-bottom:0.625rem}
+.r-title{font-size:18px;font-weight:700;margin-bottom:0.5rem}
+.result-card.r-green .r-title{color:#14532D}
+.result-card.r-yellow .r-title{color:#78350F}
+.result-card.r-red .r-title{color:#7F1D1D}
+.r-desc{font-size:14px;line-height:1.7}
+.result-card.r-green .r-desc{color:#166534}
+.result-card.r-yellow .r-desc{color:#92400E}
+.result-card.r-red .r-desc{color:#9F1239}
+/* Next steps table */
+.next-tbl{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #e2e8f0;margin-bottom:1.25rem}
+.next-tbl th{background:#1F3864;color:#fff;padding:0.625rem 1rem;text-align:left;font-size:13px;font-weight:500}
+.next-tbl td{padding:0.625rem 1rem;font-size:13px;border-bottom:1px solid #e2e8f0;color:#4a5568}
+.next-tbl tr:last-child td{border-bottom:none}
+.next-tbl tr:hover td{background:#f8fafc}
+.td-link{color:#2E75B6;font-weight:500}
+/* VCS quote */
+.vcs-q{background:#1F3864;color:rgba(255,255,255,0.88);border-radius:12px;padding:1.125rem 1.25rem;font-size:14px;font-style:italic;line-height:1.7;margin-top:0.875rem}
+/* Intro */
+.intro-qbox{background:#1F3864;color:#fff;border-radius:12px;padding:1.5rem;margin-bottom:1rem}
+.iq-text{font-size:17px;font-weight:500;line-height:1.4;opacity:0.92}
+.iq-sep{border:none;border-top:1px solid rgba(255,255,255,0.15);margin:0.75rem 0}
+.intro-note{font-size:14px;color:#4a5568;line-height:1.7;margin-bottom:0.875rem}
+.start-btn{display:block;width:100%;padding:0.875rem;background:#2E75B6;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:500;cursor:pointer;text-align:center;font-family:inherit;transition:background 0.2s;margin-top:0.25rem}
+.start-btn:hover{background:#1F3864}
+.overview-box{background:#FFFBEB;border:1px solid #FCD34D;border-radius:10px;padding:0.875rem 1rem;margin-bottom:1rem}
+.ob-title{font-size:12px;font-weight:600;color:#78350F;margin-bottom:0.375rem}
+.ob-steps{font-size:13px;color:#92400E;line-height:1.8}
+/* Nav bar */
+.nav-bar{position:sticky;bottom:0;background:#fff;border-top:1px solid #e2e8f0;padding:0.875rem 0;display:flex;justify-content:space-between;align-items:center;z-index:100;margin-top:1.5rem}
+.nav-btn{padding:0.5rem 1.25rem;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;border:none;font-family:inherit;transition:all 0.15s}
+.nav-btn.sec{background:#f0f4f8;color:#4a5568;border:1px solid #e2e8f0}
+.nav-btn.sec:hover:not(:disabled){background:#e2e8f0}
+.nav-btn.pri{background:#1F3864;color:#fff}
+.nav-btn.pri:hover:not(:disabled){background:#2E75B6}
+.nav-btn:disabled{opacity:0.35;cursor:not-allowed}
+.nav-ctr{font-size:12px;color:#a0aec0}
+/* Notice box */
+.notice{background:#EFF6FF;border:1px solid #BFDBFE;border-radius:10px;padding:0.875rem 1rem;margin-top:0.75rem}
+.notice p{font-size:13px;color:#1E40AF;line-height:1.6}
+/* Footer */
+.pb-footer{text-align:center;padding:1.5rem 0 0;border-top:1px solid #e2e8f0;margin-top:1rem}
+.pb-footer p{font-size:12px;color:#a0aec0;line-height:1.8}
+/* Step display: all visible by default, JS hides after load */
+.pb-step{display:block;padding-bottom:0.5rem;border-bottom:2px dashed #e2e8f0;margin-bottom:1.5rem}
+#app.ready .pb-step{display:none}
+#app.ready .pb-step.active{display:block;border-bottom:none;margin-bottom:0}
+#app.ready .nav-bar{display:flex}
+#app:not(.ready) .progress-wrap{display:none}
+#app:not(.ready) .nav-bar{display:none}
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <div class="pb-header">
+    <div class="vcs-eyebrow">Học viện Concepts · VCS · Playbook Series</div>
+    <h1>Playbook 00 — Tư duy trước khi bắt đầu</h1>
+    <p>Tự kiểm tra · Dành cho người mới · Khoảng 15 phút</p>
+  </div>
+
+  <div class="progress-wrap" id="progressWrap">
+    <div class="step-dots" id="stepDots">
+      <button class="step-dot s-active" onclick="gotoStep(0)">Mở đầu</button>
+      <button class="step-dot" onclick="gotoStep(1)">Lý do vào sai</button>
+      <button class="step-dot" onclick="gotoStep(2)">Tư duy cần có</button>
+      <button class="step-dot" onclick="gotoStep(3)">Bạn là ai</button>
+      <button class="step-dot" onclick="gotoStep(4)">Câu hỏi thật</button>
+      <button class="step-dot" onclick="gotoStep(5)">Bỏ cuộc</button>
+      <button class="step-dot" onclick="gotoStep(6)">Nếu đi tiếp</button>
+      <button class="step-dot" onclick="gotoStep(7)">Kết quả</button>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="pFill"></div>
+    </div>
+  </div>
+
+  <!-- ===== STEP 0: INTRO ===== -->
+  <div class="pb-step active" data-step="0">
+    <div class="sec-badge">Mở đầu</div>
+    <div class="intro-qbox">
+      <div class="iq-text">"Tôi có nên mở quán không?"</div>
+      <hr class="iq-sep">
+      <div class="iq-text">"Tôi có phù hợp với nghề F&B không?"</div>
+    </div>
+    <p class="intro-note">Đây là hai câu hỏi mà gần như mọi người mới muốn bước vào F&B đều tự hỏi. Phần lớn người không thật sự trả lời — họ chỉ tìm kiếm sự xác nhận cho quyết định đã ngầm muốn đưa ra từ trước.</p>
+    <p class="intro-note">Playbook này không để đọc rồi gật đầu. Nó được viết để làm bạn <strong>khó chịu một chút</strong> — theo nghĩa tốt. Quyết định đúng đắn đôi khi bắt đầu bằng sự khó chịu khi nhìn thẳng vào bản thân.</p>
+    <div class="overview-box">
+      <div class="ob-title">Bạn sẽ đi qua 7 bước:</div>
+      <div class="ob-steps">1 · Kiểm tra lý do vào ngành &nbsp;·&nbsp; 2 · Tự đánh giá 5 tư duy &nbsp;·&nbsp; 3 · Nhận diện bản thân<br>4 · Trả lời 6 câu hỏi thật &nbsp;·&nbsp; 5–6 · Đọc để hiểu &nbsp;·&nbsp; 7 · Xem kết quả tổng hợp</div>
+    </div>
+    <button class="start-btn" onclick="gotoStep(1)">Bắt đầu tự kiểm tra →</button>
+  </div>
+
+  <!-- ===== STEP 1: 4 NHÓM LÝ DO ===== -->
+  <div class="pb-step" data-step="1">
+    <div class="sec-badge">Phần 1 · Lý do vào F&B</div>
+    <div class="sec-title">Tại sao người ta vào F&B với lý do sai</div>
+    <p class="sec-sub">Chọn nhóm nào <strong>có thể</strong> là lý do của bạn. Không phán xét — chỉ cần trung thực.</p>
+
+    <div class="group-grid">
+      <div class="group-card" id="gc1">
+        <div class="g-num">1</div>
+        <div class="g-title">Đam mê sản phẩm</div>
+        <div class="g-desc">"Tôi yêu cà phê / nấu ăn / không gian quán xá." Lý do nghe hay nhất — và dễ dẫn vào sai hướng nhất. Yêu sản phẩm khác với yêu vận hành một mô hình kinh doanh.</div>
+        <div class="g-q">Tôi yêu sản phẩm — hay tôi yêu việc xây dựng và vận hành một mô hình kinh doanh? Nếu quán không như mong đợi trong 3 tháng đầu, đam mê có giữ được tôi ở lại không?</div>
+        <button class="g-btn" onclick="pickGroup(this,'gc1')">Có thể là tôi</button>
+      </div>
+
+      <div class="group-card" id="gc2">
+        <div class="g-num">2</div>
+        <div class="g-title">Chán nghề hiện tại</div>
+        <div class="g-desc">"Tôi muốn thay đổi, muốn làm chủ." F&B không phải nơi để trốn khỏi áp lực — nó là nơi nhận thêm áp lực từ hướng khác: khách hàng, mặt bằng, nhân viên, nhà cung cấp.</div>
+        <div class="g-q">Nếu công việc hiện tại bỗng nhiên trở nên thú vị hơn vào ngày mai, tôi có còn muốn mở quán không?</div>
+        <button class="g-btn" onclick="pickGroup(this,'gc2')">Có thể là tôi</button>
+      </div>
+
+      <div class="group-card" id="gc3">
+        <div class="g-num">3</div>
+        <div class="g-title">Áp lực xã hội</div>
+        <div class="g-desc">"Gia đình muốn, người quen đang làm, trông có vẻ ổn." Áp lực xã hội là động lực thật nhưng không bền. Khi gặp khó khăn, không ai đứng ở quầy thay bạn.</div>
+        <div class="g-q">Nếu không ai biết tôi đang mở quán — không có ai khen, không có ai kỳ vọng — tôi vẫn muốn làm không?</div>
+        <button class="g-btn" onclick="pickGroup(this,'gc3')">Có thể là tôi</button>
+      </div>
+
+      <div class="group-card" id="gc4">
+        <div class="g-num">4</div>
+        <div class="g-title">Kỳ vọng tài chính</div>
+        <div class="g-desc">"Ngành này nhiều người kiếm tốt." Những quán đóng cửa sau 4 tháng không đăng bài trên mạng xã hội. Kỳ vọng tài chính đặt trước khi hiểu cơ cấu mô hình dẫn đến quyết định vội vã.</div>
+        <div class="g-q">Nếu năm đầu chỉ hòa vốn — không lỗ nhưng cũng chưa có lãi — tôi vẫn coi đó là thành công và tiếp tục không?</div>
+        <button class="g-btn" onclick="pickGroup(this,'gc4')">Có thể là tôi</button>
+      </div>
+    </div>
+
+    <div class="notice" id="group-note" style="display:none">
+      <p>Những lý do này <strong>không phải dấu chấm hết</strong>. Đam mê giúp bạn bắt đầu — hệ thống giúp bạn tồn tại. Vấn đề không nằm ở lý do mà ở mức độ bạn hiểu rõ giới hạn của lý do đó trước khi bước vào.</p>
+    </div>
+  </div>
+
+  <!-- ===== STEP 2: 5 TƯ DUY ===== -->
+  <div class="pb-step" data-step="2">
+    <div class="sec-badge">Phần 2 · Tự đánh giá</div>
+    <div class="sec-title">F&B đòi hỏi 5 tư duy này</div>
+    <p class="sec-sub">Tự chấm từ 1 đến 5 cho từng tư duy. Điểm sẽ tính vào kết quả cuối.</p>
+
+    <div class="rating-card">
+      <div class="rc-top">
+        <span class="rc-num">1</span>
+        <span class="rc-title">Chịu được sự lặp lại mà không chán</span>
+        <span class="rc-score" id="v1">3</span>
+      </div>
+      <p class="rc-desc">F&B là ngành của sự lặp lại: mỗi ngày mở cửa, mỗi ca đứng quầy, mỗi ly pha chuẩn tiêu chuẩn. Người thích sự mới mẻ sẽ thấy ngột ngạt sau 3–4 tháng.</p>
+      <p class="rc-q">Tôi có thể làm cùng một việc 200 lần mà vẫn giữ được tiêu chuẩn không?</p>
+      <div class="slider-wrap">
+        <input type="range" min="1" max="5" value="3" id="s1" step="1" oninput="upd('s1','v1')">
+        <div class="slider-labels"><span>Chưa có</span><span>Mới bắt đầu</span><span>Đang rèn</span><span>Khá tốt</span><span>Rất rõ</span></div>
+      </div>
+    </div>
+
+    <div class="rating-card">
+      <div class="rc-top">
+        <span class="rc-num">2</span>
+        <span class="rc-title">Ưu tiên hệ thống hơn cảm hứng</span>
+        <span class="rc-score" id="v2">3</span>
+      </div>
+      <p class="rc-desc">Mô hình sống lâu không sống bằng những ngày tốt của owner — nó sống bằng hệ thống hoạt động ngay cả khi owner vắng mặt.</p>
+      <p class="rc-q">Tôi thích kiểm soát trực tiếp từng chi tiết — hay tôi thích xây cơ chế để mọi thứ tự chạy đúng?</p>
+      <div class="slider-wrap">
+        <input type="range" min="1" max="5" value="3" id="s2" step="1" oninput="upd('s2','v2')">
+        <div class="slider-labels"><span>Chưa có</span><span>Mới bắt đầu</span><span>Đang rèn</span><span>Khá tốt</span><span>Rất rõ</span></div>
+      </div>
+    </div>
+
+    <div class="rating-card">
+      <div class="rc-top">
+        <span class="rc-num">3</span>
+        <span class="rc-title">Đọc được thực tế, không chỉ đọc kỳ vọng</span>
+        <span class="rc-score" id="v3">3</span>
+      </div>
+      <p class="rc-desc">Có một dạng người chủ quán luôn giải thích vì sao tháng này khó, tháng sau sẽ tốt hơn — và tháng sau lại có lý do khác. Họ đọc kỳ vọng, không đọc thực tế.</p>
+      <p class="rc-q">Khi kết quả không như mong đợi, phản ứng đầu tiên của tôi là giải thích hay tìm hiểu?</p>
+      <div class="slider-wrap">
+        <input type="range" min="1" max="5" value="3" id="s3" step="1" oninput="upd('s3','v3')">
+        <div class="slider-labels"><span>Chưa có</span><span>Mới bắt đầu</span><span>Đang rèn</span><span>Khá tốt</span><span>Rất rõ</span></div>
+      </div>
+    </div>
+
+    <div class="rating-card">
+      <div class="rc-top">
+        <span class="rc-num">4</span>
+        <span class="rc-title">Chịu được cảm giác không chắc chắn</span>
+        <span class="rc-score" id="v4">3</span>
+      </div>
+      <p class="rc-desc">Ngành này liên tục yêu cầu quyết định trong điều kiện thông tin không đủ. Người cần sự chắc chắn 100% để hành động sẽ thấy F&B rất mệt.</p>
+      <p class="rc-q">Tôi có thể đưa ra quyết định với 70% thông tin và chịu trách nhiệm về kết quả không?</p>
+      <div class="slider-wrap">
+        <input type="range" min="1" max="5" value="3" id="s4" step="1" oninput="upd('s4','v4')">
+        <div class="slider-labels"><span>Chưa có</span><span>Mới bắt đầu</span><span>Đang rèn</span><span>Khá tốt</span><span>Rất rõ</span></div>
+      </div>
+    </div>
+
+    <div class="rating-card">
+      <div class="rc-top">
+        <span class="rc-num">5</span>
+        <span class="rc-title">Phân biệt được "bận" và "hiệu quả"</span>
+        <span class="rc-score" id="v5">3</span>
+      </div>
+      <p class="rc-desc">Người chủ quán bận 14 tiếng/ngày không tự động có nghĩa là mô hình đang tốt. Bận là việc đang xảy ra. Hiệu quả là những việc đó tạo ra kết quả gì.</p>
+      <p class="rc-q">Trong 10 việc tôi làm mỗi ngày, bao nhiêu việc thật sự ảnh hưởng đến doanh thu và trải nghiệm khách?</p>
+      <div class="slider-wrap">
+        <input type="range" min="1" max="5" value="3" id="s5" step="1" oninput="upd('s5','v5')">
+        <div class="slider-labels"><span>Chưa có</span><span>Mới bắt đầu</span><span>Đang rèn</span><span>Khá tốt</span><span>Rất rõ</span></div>
+      </div>
+    </div>
+
+    <div class="live-score">
+      <div class="ls-label">Điểm tư duy hiện tại</div>
+      <div class="ls-val" id="liveScore">60 / 100</div>
+    </div>
+  </div>
+
+  <!-- ===== STEP 3: BẠN LÀ AI ===== -->
+  <div class="pb-step" data-step="3">
+    <div class="sec-badge">Phần 3 · Nhận diện</div>
+    <div class="sec-title">Bạn là ai trong ngành này?</div>
+    <p class="sec-sub">Check những đặc điểm nào <strong>thật sự</strong> mô tả bạn. Không phán xét — chỉ cần trung thực với chính mình.</p>
+    <div class="cl-cols">
+      <div class="cl-col c-good">
+        <div class="cl-hdr good">Người thường đi được dài</div>
+        <div class="cl-item">
+          <input type="checkbox" id="c1" class="cg">
+          <label for="c1">Thích giải quyết vấn đề cụ thể hơn là lý thuyết chung</label>
+        </div>
+        <div class="cl-item">
+          <input type="checkbox" id="c2" class="cg">
+          <label for="c2">Không ngại công việc tay chân khi cần thiết</label>
+        </div>
+        <div class="cl-item">
+          <input type="checkbox" id="c3" class="cg">
+          <label for="c3">Thoải mái với việc không được công nhận ngay</label>
+        </div>
+        <div class="cl-item">
+          <input type="checkbox" id="c4" class="cg">
+          <label for="c4">Thay đổi quyết định dựa trên dữ liệu, không cảm xúc</label>
+        </div>
+        <div class="cl-item">
+          <input type="checkbox" id="c5" class="cg">
+          <label for="c5">Quản lý năng lượng tốt, biết khi nào cần dừng và delegate</label>
+        </div>
+      </div>
+      <div class="cl-col c-risk">
+        <div class="cl-hdr risk">Người thường kiệt sức sớm</div>
+        <div class="cl-item">
+          <input type="checkbox" id="c6" class="cr">
+          <label for="c6">Cần được công nhận thường xuyên để duy trì động lực</label>
+        </div>
+        <div class="cl-item">
+          <input type="checkbox" id="c7" class="cr">
+          <label for="c7">Tư duy "tôi làm được tất cả" — không chịu giao việc</label>
+        </div>
+        <div class="cl-item">
+          <input type="checkbox" id="c8" class="cr">
+          <label for="c8">Né tránh quyết định khó (sa thải, tăng giá, từ chối deal xấu)</label>
+        </div>
+        <div class="cl-item">
+          <input type="checkbox" id="c9" class="cr">
+          <label for="c9">Đọc kết quả ngắn hạn như bằng chứng dài hạn</label>
+        </div>
+      </div>
+    </div>
+    <div class="notice" style="margin-top:0.875rem">
+      <p>Đây không phải bài trắc nghiệm tính cách. Nhiều người có cả hai nhóm đặc điểm. Điều quan trọng là <strong>biết cái nào đang chiếm ưu thế</strong> — và cái nào cần được rèn luyện có chủ đích.</p>
+    </div>
+  </div>
+
+  <!-- ===== STEP 4: 6 CÂU HỎI THẬT ===== -->
+  <div class="pb-step" data-step="4">
+    <div class="sec-badge">Phần 4 · Câu hỏi thật</div>
+    <div class="sec-title">6 câu hỏi để tự trả lời</div>
+    <p class="sec-sub">Không có điểm số. Không có đúng hay sai. Chỉ cần trả lời thật — với chính mình, không phải với ai khác.</p>
+
+    <div class="q-card">
+      <div class="q-num">Câu 1</div>
+      <div class="q-text">Nếu quán đầu tiên của tôi thất bại sau 18 tháng — mất hết vốn đầu tư — tôi có thể đứng dậy và nói "tôi đã học được gì từ điều này" mà không oán trách ngành, không oán trách hoàn cảnh không?</div>
+      <textarea placeholder="Viết suy nghĩ của bạn ở đây..."></textarea>
+    </div>
+
+    <div class="q-card">
+      <div class="q-num">Câu 2</div>
+      <div class="q-text">Tôi có thể kể tên 3 quyết định khó mà tôi đã đưa ra trong 2 năm gần đây — quyết định không phổ biến, không được ủng hộ, nhưng vẫn thực hiện vì đó là điều đúng đắn?</div>
+      <textarea placeholder="Viết suy nghĩ của bạn ở đây..."></textarea>
+    </div>
+
+    <div class="q-card">
+      <div class="q-num">Câu 3</div>
+      <div class="q-text">Nếu ngày mai tôi phải đứng quầy từ 6 giờ sáng đến 9 giờ tối, rửa bát, xử lý khách phàn nàn, kiểm kho, chốt ca — rồi làm lại ngày hôm sau — tôi cảm thấy thế nào sau 3 tuần liên tiếp?</div>
+      <textarea placeholder="Viết suy nghĩ của bạn ở đây..."></textarea>
+    </div>
+
+    <div class="q-card">
+      <div class="q-num">Câu 4</div>
+      <div class="q-text">Người thân của tôi — vợ/chồng, cha mẹ, người chia sẻ tài chính — có thật sự hiểu và đồng ý với rủi ro không? Không phải "đồng ý miễn cưỡng" mà là thật sự hiểu rằng năm đầu có thể không có lãi?</div>
+      <textarea placeholder="Viết suy nghĩ của bạn ở đây..."></textarea>
+    </div>
+
+    <div class="q-card">
+      <div class="q-num">Câu 5</div>
+      <div class="q-text">Nếu 6 tháng sau khai trương, doanh thu ổn định nhưng chỉ đủ trả chi phí — không có lợi nhuận để tôi rút ra — tôi có tiếp tục không? Và bằng tiền của ai?</div>
+      <textarea placeholder="Viết suy nghĩ của bạn ở đây..."></textarea>
+    </div>
+
+    <div class="q-card q-special">
+      <div class="q-num sp">Câu 6 · Quan trọng nhất</div>
+      <div class="q-text">Điều tôi sợ nhất nếu mở quán là gì?</div>
+      <p class="q-note">Hãy viết ra, không phải chỉ nghĩ trong đầu. Điều bạn sợ nhất thường tiết lộ rõ nhất bạn đang thật sự đứng ở đâu.</p>
+      <textarea placeholder="Viết ở đây — chỉ bạn đọc..." style="min-height:96px"></textarea>
+    </div>
+  </div>
+
+  <!-- ===== STEP 5: BỎ CUỘC ===== -->
+  <div class="pb-step" data-step="5">
+    <div class="sec-badge">Phần 5 · Góc nhìn</div>
+    <div class="sec-title">Bỏ cuộc trước khi bỏ tiền — đó không phải thất bại</div>
+    <p class="sec-sub">Có một sự thật mà ít ai nói thẳng trong ngành F&B: quyết định <strong>không mở quán</strong> — sau khi đã suy nghĩ kỹ — là một quyết định dũng cảm và thông minh.</p>
+
+    <div class="bc-grid">
+      <div class="bc-type t-gray">
+        <div class="bc-icon">🤔</div>
+        <div class="bc-title">Bỏ cuộc vì sợ hãi không cơ sở</div>
+        <div class="bc-desc">Chưa tìm hiểu, chưa làm rõ, chỉ đơn giản là lo lắng chung chung về những thứ chưa biết.</div>
+        <div class="bc-tag">→ Đẩy qua, tìm hiểu thêm</div>
+      </div>
+      <div class="bc-type t-green">
+        <div class="bc-icon">✓</div>
+        <div class="bc-title">Bỏ cuộc vì nhận ra chưa sẵn sàng</div>
+        <div class="bc-desc">Đã tìm hiểu, đã trả lời câu hỏi thật, và thấy rằng hiện tại chưa đủ điều kiện.</div>
+        <div class="bc-tag">Quyết định khôn ngoan</div>
+      </div>
+      <div class="bc-type t-red">
+        <div class="bc-icon">!</div>
+        <div class="bc-title">Bỏ cuộc giữa chừng sau khi đã đầu tư</div>
+        <div class="bc-desc">Đây mới là tốn kém nhất — cả về tài chính lẫn tâm lý và thời gian đã bỏ ra.</div>
+        <div class="bc-tag">Playbook này giúp tránh điều này</div>
+      </div>
+    </div>
+
+    <div class="card" style="background:#FFFBEB;border-color:#FCD34D;margin-top:0.875rem">
+      <p style="font-size:14px;color:#92400E;line-height:1.7"><strong>Ngược lại:</strong> tiếp tục sau khi đã biết mình chưa sẵn sàng — đó mới là rủi ro thật. Người dừng lại trước khi đầu tư không phải người thua. Họ chỉ là người không chơi một ván bài mà xác suất thắng của họ quá thấp.</p>
+    </div>
+  </div>
+
+  <!-- ===== STEP 6: NẾU ĐI TIẾP ===== -->
+  <div class="pb-step" data-step="6">
+    <div class="sec-badge">Phần 6 · Chuẩn bị</div>
+    <div class="sec-title">Nếu quyết định đi tiếp — đi với tư duy gì?</div>
+    <p class="sec-sub">Đây không phải lời khuyên chung chung. Đây là những thứ vận hành thực tế đòi hỏi từ người chủ quán.</p>
+
+    <div class="ins-grid">
+      <div class="ins-card">
+        <div class="ins-icon">🎯</div>
+        <div class="ins-title">Sự khiêm tốn, không phải tự tin thái quá</div>
+        <div class="ins-desc">Người giỏi nhất trong ngành thường là người học nhanh nhất, không phải người biết nhiều nhất từ đầu. F&B sẽ liên tục cho bạn thấy những thứ bạn chưa biết.</div>
+      </div>
+      <div class="ins-card">
+        <div class="ins-icon">⚙️</div>
+        <div class="ins-title">Kỷ luật, không phải đam mê</div>
+        <div class="ins-desc">Đam mê giúp bạn bắt đầu. Kỷ luật giúp bạn đứng vững khi đam mê nguội đi — và nó sẽ nguội, ít nhất một lần trong 12 tháng đầu.</div>
+      </div>
+      <div class="ins-card">
+        <div class="ins-icon">📊</div>
+        <div class="ins-title">Khả năng đọc số, không chỉ đọc cảm xúc</div>
+        <div class="ins-desc">Food cost, bills/ngày, EBITDA — những chỉ số này nói chuyện với bạn mỗi tháng, dù bạn có lắng nghe hay không.</div>
+      </div>
+      <div class="ins-card">
+        <div class="ins-icon">🏗️</div>
+        <div class="ins-title">Xây hệ thống trước, scale sau</div>
+        <div class="ins-desc">Điểm đầu tiên không phải nơi để thử nghiệm — nó là nơi để chứng minh mô hình có thể sống được trước khi nhân bản.</div>
+      </div>
+      <div class="ins-card wide">
+        <div class="ins-icon">🔄</div>
+        <div class="ins-title">Khả năng bỏ cuộc đúng lúc nếu dữ liệu nói rõ</div>
+        <div class="ins-desc">Nghe mâu thuẫn sau khi đã quyết định đi tiếp — nhưng không phải. Biết khi nào cần dừng (khi cơ cấu mô hình sai, không phải khi giai đoạn khó) là phần của tư duy vận hành trưởng thành. Người giỏi nhất không phải người không bao giờ sai — họ là người nhận ra mình sai sớm nhất.</div>
+      </div>
+    </div>
+
+    <div class="vcs-q">"Không mở quán để thử, mà mở để sống được, và sống dài lâu." — VCS</div>
+  </div>
+
+  <!-- ===== STEP 7: KẾT QUẢ ===== -->
+  <div class="pb-step" data-step="7">
+    <div class="sec-badge">Kết quả</div>
+    <div class="sec-title">Đánh giá tư duy của bạn</div>
+    <p class="sec-sub">Dựa trên phần tự đánh giá 5 tư duy (Phần 2).</p>
+
+    <div class="result-score">
+      <div class="rs-label">Điểm tư duy tổng hợp</div>
+      <div>
+        <span class="rs-num" id="finalNum">—</span>
+        <span class="rs-out"> / 100</span>
+      </div>
+      <div class="rs-bar-track">
+        <div class="rs-bar-fill" id="rBar" style="width:0%"></div>
+      </div>
+      <div class="rs-bar-labels">
+        <span>0</span>
+        <span>Cần chuẩn bị</span>
+        <span>Đang hình thành</span>
+        <span>Sẵn sàng</span>
+        <span>100</span>
+      </div>
+    </div>
+
+    <div id="resultCard"></div>
+
+    <div style="font-size:14px;font-weight:600;color:#1a202c;margin:1.25rem 0 0.625rem">Bước tiếp theo trong series</div>
+    <table class="next-tbl">
+      <thead>
+        <tr><th>Quyết định của bạn</th><th>Đọc tiếp</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Muốn hiểu ngành trước khi quyết định</td>
+          <td class="td-link"><a href="https://lo-trinh-cho-nguoi-moi.pages.dev/" target="_blank" rel="noopener" style="color:#2E75B6;text-decoration:none;font-weight:500">Playbook Lộ trình F&amp;B cho người mới ↗</a></td>
+        </tr>
+        <tr>
+          <td>Muốn hiểu các bước tiến hành</td>
+          <td class="td-link"><a href="https://vcs-fnb-co-ban-bang-con-so.hocvienconcepts.workers.dev/" target="_blank" rel="noopener" style="color:#2E75B6;text-decoration:none;font-weight:500">Playbook Khởi nghiệp F&amp;B cơ bản bằng con số ↗</a></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="background:#EFF6FF;border:1.5px solid #BFDBFE;border-radius:12px;padding:1.125rem 1.25rem;margin-top:1rem">
+      <div style="font-size:12px;font-weight:700;color:#1E3A8A;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:0.625rem">Muốn đi sâu hơn?</div>
+      <p style="font-size:13px;color:#1E40AF;line-height:1.6;margin-bottom:0.75rem">
+        <a href="https://vcs.edu.vn/khoa-hoc/khoa-hoc-thuc-chien-so-0/" target="_blank" rel="noopener" style="color:#1D4ED8;font-weight:600;text-decoration:none">Khoá học thực chiến Số 0: Nền móng xây dựng mô hình kinh doanh ẩm thực (F&amp;B) tinh gọn ↗</a>
+        <br>Chương trình đào tạo thực chiến giúp bạn rà nền móng, xác định mô hình đúng và tránh những sai lầm tốn kém nhất trước khi mở quán.
+      </p>
+      <a href="https://www.messenger.com/t/529171340283268/?messaging_source=source%3Apages%3Amessage_shortlink&source_id=1441792&recurring_notification=0" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:0.375rem;background:#1D4ED8;color:#fff;font-size:12px;font-weight:600;padding:0.45rem 1rem;border-radius:20px;text-decoration:none">
+        💬 Tư vấn lộ trình học
+      </a>
+    </div>
+
+    <div class="vcs-q">Bước đầu tiên không phải là tìm mặt bằng. Không phải là thiết kế logo. Không phải là nghĩ xem menu sẽ có gì. Bước đầu tiên là ngồi xuống, một mình, và trả lời thật những câu hỏi trong playbook này.</div>
+
+    <div class="pb-footer">
+      <p>Học viện Concepts (VCS)<br>"Khóa học không dạy mở quán, mà dạy cách sống được với nghề"<br>info@vcs.edu.vn</p>
+    </div>
+  </div>
+
+  <!-- NAV BAR -->
+  <div class="nav-bar" id="navBar">
+    <button class="nav-btn sec" id="prevBtn" onclick="changeStep(-1)" disabled>← Quay lại</button>
+    <span class="nav-ctr" id="navCtr">1 / 8</span>
+    <button class="nav-btn pri" id="nextBtn" onclick="changeStep(1)">Tiếp theo →</button>
+  </div>
+
+</div>
+
+<script>
+var cur = 0;
+var N = 8;
+
+function gotoStep(n) {
+  if (n < 0 || n >= N) return;
+  cur = n;
+  var steps = document.querySelectorAll('.pb-step');
+  steps.forEach(function(s) { s.classList.remove('active'); });
+  steps[n].classList.add('active');
+  var dots = document.querySelectorAll('.step-dot');
+  dots.forEach(function(d, i) {
+    d.classList.remove('s-active','s-done');
+    if (i === n) d.classList.add('s-active');
+    else if (i < n) d.classList.add('s-done');
+  });
+  document.getElementById('pFill').style.width = Math.round((n + 1) / N * 100) + '%';
+  document.getElementById('navCtr').textContent = (n + 1) + ' / ' + N;
+  document.getElementById('prevBtn').disabled = (n === 0);
+  var nb = document.getElementById('nextBtn');
+  if (n === N - 2) { nb.textContent = 'Ver kết quả →'; nb.disabled = false; }
+  else if (n === N - 1) { nb.textContent = 'Hoàn thành ✓'; nb.disabled = true; }
+  else { nb.textContent = 'Tiếp theo →'; nb.disabled = false; }
+  if (n === N - 1) { showResult(); }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function changeStep(d) { gotoStep(cur + d); }
+
+function pickGroup(btn, id) {
+  var on = btn.classList.contains('picked');
+  btn.classList.toggle('picked', !on);
+  btn.textContent = on ? 'Có thể là tôi' : 'Đã chọn ✓';
+  document.getElementById(id).classList.toggle('sel', !on);
+  var anyPicked = document.querySelectorAll('.g-btn.picked').length > 0;
+  document.getElementById('group-note').style.display = anyPicked ? 'block' : 'none';
+}
+
+function upd(sid, vid) {
+  var val = parseInt(document.getElementById(sid).value);
+  document.getElementById(vid).textContent = val;
+  calcLive();
+}
+
+function calcLive() {
+  var total = 0;
+  ['s1','s2','s3','s4','s5'].forEach(function(id) {
+    total += parseInt(document.getElementById(id).value);
+  });
+  var pct = Math.round((total / 25) * 100);
+  document.getElementById('liveScore').textContent = pct + ' / 100';
+  return pct;
+}
+
+function showResult() {
+  var score = calcLive();
+  document.getElementById('finalNum').textContent = score;
+  var bar = document.getElementById('rBar');
+  var color = score >= 75 ? '#22C55E' : score >= 50 ? '#F59E0B' : '#F87171';
+  setTimeout(function() {
+    bar.style.width = score + '%';
+    bar.style.background = color;
+  }, 150);
+  var rc = document.getElementById('resultCard');
+  var html = '';
+  if (score >= 75) {
+    html = '<div class="result-card r-green">' +
+      '<div class="r-icon">🟢</div>' +
+      '<div class="r-title">Tư duy đang vào hình</div>' +
+      '<div class="r-desc">Bạn có nền tảng tư duy tương đối tốt để bắt đầu hành trình này. Điều đó không có nghĩa là dễ dàng — F&B vẫn sẽ cho bạn thấy nhiều thứ bạn chưa biết. Nhưng bạn có các công cụ tư duy cơ bản để học và điều chỉnh theo dữ liệu.<br><br><strong>Bước tiếp theo:</strong> đọc Playbook 01 — Checklist ROOT™ để kiểm tra nền móng tài chính và xác định tệp khách.</div>' +
+      '</div>';
+  } else if (score >= 50) {
+    html = '<div class="result-card r-yellow">' +
+      '<div class="r-icon">🟡</div>' +
+      '<div class="r-title">Đang hình thành — cần rèn thêm một số tư duy</div>' +
+      '<div class="r-desc">Bạn có một số tư duy phù hợp nhưng vẫn còn những mảng cần phát triển thêm. Đó không phải lý do để dừng lại — mà là lý do để chuẩn bị kỹ hơn trước khi bước vào thực chiến.<br><br>Xem lại các tư duy bạn chấm điểm thấp nhất. Đó là những thứ cần rèn trước khi bỏ vốn. <strong>Đọc song song Playbook 01 và Playbook 02.</strong></div>' +
+      '</div>';
+  } else {
+    html = '<div class="result-card r-red">' +
+      '<div class="r-icon">🔴</div>' +
+      '<div class="r-title">Chưa phải thời điểm — cần thêm thời gian chuẩn bị</div>' +
+      '<div class="r-desc">Điểm tư duy hiện tại cho thấy bạn cần thêm thời gian chuẩn bị — không phải nhất thiết về vốn hay kỹ năng, mà về tư duy vận hành.<br><br>Đây không phải kết luận cuối cùng. Tư duy có thể rèn được — nhưng cần rèn <em>trước khi</em> bỏ vốn vào, không phải trong khi đang vận hành.<br><br><strong>Đọc Playbook 02 trước</strong>, sau đó quay lại tự kiểm tra sau 30 ngày.</div>' +
+      '</div>';
+  }
+  rc.innerHTML = html;
+}
+
+(function init() {
+  document.getElementById('app').classList.add('ready');
+  gotoStep(0);
+  calcLive();
+})();
+</script>
+</body>
+</html>
