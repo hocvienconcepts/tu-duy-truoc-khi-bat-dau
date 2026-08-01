@@ -41,4 +41,4 @@ Trang tĩnh deploy lên Cloudflare Pages qua GitHub.
 
 ---
 
-*Cập nhật lần cuối: 2026-06-20 · VCS info@vcs.edu.vn*
+*Cập nhật lần cuối: 2026-08-01 · VCS info@vcs.edu.vn*

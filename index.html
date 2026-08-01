@@ -4,58 +4,71 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Playbook 00 — Tư duy trước khi bắt đầu | VCS</title>
+
+<script>
+(function(){
+  var host = String(window.location.hostname || '').toLowerCase();
+  var allowedHost = host === 'online-vcs.edu.vn' || host.endsWith('.online-vcs.edu.vn');
+  var allowedProtocol = window.location.protocol === 'https:';
+  window.__VCS_DOMAIN_ALLOWED__ = allowedHost && allowedProtocol;
+  if (!window.__VCS_DOMAIN_ALLOWED__) {
+    document.documentElement.classList.add('vcs-domain-locked');
+  }
+})();
+</script>
+
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:#f0f4f8;color:#1a202c;min-height:100vh;padding-bottom:5rem}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:#f7f3fb;color:#1a202c;min-height:100vh;padding-bottom:5rem}
 #app{max-width:740px;margin:0 auto;padding:0 1rem}
 /* Header */
-.pb-header{background:#1F3864;color:#fff;border-radius:0 0 16px 16px;padding:2rem 2rem 1.5rem;margin-bottom:1.25rem}
+.pb-header{background:#2b0956;color:#fff;border-radius:0 0 16px 16px;padding:2rem 2rem 1.5rem;margin-bottom:1.25rem}
 .vcs-eyebrow{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:0.5rem}
 .pb-header h1{font-size:21px;font-weight:600;line-height:1.3;margin-bottom:0.4rem}
 .pb-header p{font-size:13px;color:rgba(255,255,255,0.65)}
 /* Progress nav */
-.progress-wrap{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:0.875rem 1rem;margin-bottom:1.25rem}
+.progress-wrap{background:#fff;border:1px solid #ded3ea;border-radius:12px;padding:0.875rem 1rem;margin-bottom:1.25rem}
 .step-dots{display:flex;gap:4px;align-items:center;margin-bottom:0.6rem;overflow-x:auto;padding-bottom:4px}
-.step-dot{flex:0 0 auto;font-size:11px;padding:3px 10px;border-radius:20px;cursor:pointer;border:none;background:transparent;color:#a0aec0;font-family:inherit;transition:all 0.15s;white-space:nowrap}
-.step-dot:hover{color:#4a5568}
-.step-dot.s-active{background:#D5E8F0;color:#1F3864;font-weight:500}
-.step-dot.s-done{color:#2E75B6}
-.progress-track{height:3px;background:#e2e8f0;border-radius:2px}
-.progress-fill{height:3px;border-radius:2px;background:#2E75B6;transition:width 0.4s ease;width:12.5%}
+.step-dot{flex:0 0 auto;font-size:11px;padding:3px 10px;border-radius:20px;cursor:pointer;border:none;background:transparent;color:#9b90a4;font-family:inherit;transition:all 0.15s;white-space:nowrap}
+.step-dot:hover{color:#675d70}
+.step-dot.s-active{background:#f1e8f8;color:#2b0956;font-weight:500}
+.step-dot.s-done{color:#f34900}
+.progress-track{height:3px;background:#ded3ea;border-radius:2px}
+.progress-fill{height:3px;border-radius:2px;background:#f34900;transition:width 0.4s ease;width:12.5%}
 /* Step animations */
 .pb-step{animation:fadeUp 0.25s ease}
 @keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 /* Section labels */
-.sec-badge{display:inline-block;background:#D5E8F0;color:#1F3864;font-size:11px;font-weight:600;letter-spacing:1px;padding:3px 10px;border-radius:20px;margin-bottom:0.625rem;text-transform:uppercase}
+.sec-badge{display:inline-block;background:#f1e8f8;color:#2b0956;font-size:11px;font-weight:600;letter-spacing:1px;padding:3px 10px;border-radius:20px;margin-bottom:0.625rem;text-transform:uppercase}
 .sec-title{font-size:19px;font-weight:600;color:#1a202c;margin-bottom:0.375rem;line-height:1.3}
-.sec-sub{font-size:14px;color:#4a5568;line-height:1.7;margin-bottom:1.25rem}
+.sec-sub{font-size:14px;color:#675d70;line-height:1.7;margin-bottom:1.25rem}
 /* Cards */
-.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:1.125rem 1.25rem;margin-bottom:0.875rem}
+.card{background:#fff;border:1px solid #ded3ea;border-radius:12px;padding:1.125rem 1.25rem;margin-bottom:0.875rem}
 /* Group cards for step 1 */
 .group-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.875rem;margin-bottom:0.875rem}
 @media(max-width:540px){.group-grid{grid-template-columns:1fr}}
 .group-card{background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;padding:1.125rem;cursor:default;transition:border-color 0.2s,background 0.2s}
 .group-card.sel{border-color:#f6c343;background:#fffbeb}
-.g-num{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;background:#1F3864;color:#fff;border-radius:50%;font-size:12px;font-weight:600;margin-bottom:0.625rem}
+.g-num{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;background:#2b0956;color:#fff;border-radius:50%;font-size:12px;font-weight:600;margin-bottom:0.625rem}
 .g-title{font-size:14px;font-weight:600;color:#1a202c;margin-bottom:0.375rem}
-.g-desc{font-size:13px;color:#4a5568;line-height:1.55;margin-bottom:0.625rem}
-.g-q{font-size:12px;color:#2E75B6;font-style:italic;border-left:3px solid #D5E8F0;padding-left:0.625rem;line-height:1.5;margin-bottom:0.75rem}
-.g-btn{font-size:12px;padding:4px 12px;border-radius:20px;border:1px solid #e2e8f0;background:transparent;cursor:pointer;color:#718096;font-family:inherit;transition:all 0.15s}
-.g-btn:hover{border-color:#2E75B6;color:#2E75B6}
-.g-btn.picked{background:#FEF3C7;border-color:#F59E0B;color:#92400E}
+.g-desc{font-size:13px;color:#675d70;line-height:1.55;margin-bottom:0.625rem}
+.g-q{font-size:12px;color:#f34900;font-style:italic;border-left:3px solid #ffc700;padding-left:0.625rem;line-height:1.5;margin-bottom:0.75rem}
+.g-btn{font-size:12px;padding:4px 12px;border-radius:20px;border:1px solid #ded3ea;background:transparent;cursor:pointer;color:#786d82;font-family:inherit;transition:all 0.15s}
+.g-btn:hover{border-color:#f34900;color:#f34900}
+.g-btn.picked{background:#fff4c2;border-color:#ffc700;color:#7a4b00}
 /* Step 2: ratings */
-.rating-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:1.125rem 1.25rem;margin-bottom:0.75rem}
+.rating-card{background:#fff;border:1px solid #ded3ea;border-radius:12px;padding:1.125rem 1.25rem;margin-bottom:0.75rem}
 .rc-top{display:flex;align-items:flex-start;gap:0.625rem;margin-bottom:0.375rem}
-.rc-num{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;background:#1F3864;color:#fff;border-radius:50%;font-size:11px;font-weight:600;flex-shrink:0;margin-top:1px}
+.rc-num{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;background:#2b0956;color:#fff;border-radius:50%;font-size:11px;font-weight:600;flex-shrink:0;margin-top:1px}
 .rc-title{font-size:14px;font-weight:500;color:#1a202c;flex:1;line-height:1.4}
-.rc-score{font-size:18px;font-weight:700;color:#2E75B6;min-width:18px;text-align:right;margin-left:auto}
-.rc-desc{font-size:13px;color:#4a5568;line-height:1.55;margin-bottom:0.5rem}
-.rc-q{font-size:12px;color:#718096;font-style:italic;margin-bottom:0.625rem}
-.slider-wrap input[type=range]{width:100%;accent-color:#2E75B6;cursor:pointer}
-.slider-labels{display:flex;justify-content:space-between;font-size:10px;color:#a0aec0;margin-top:3px}
-.live-score{background:#D5E8F0;border-radius:10px;padding:0.75rem 1rem;text-align:center;margin-top:0.75rem}
-.ls-label{font-size:12px;color:#2E75B6;font-weight:500;margin-bottom:2px}
-.ls-val{font-size:22px;font-weight:700;color:#1F3864}
+.rc-score{font-size:18px;font-weight:700;color:#f34900;min-width:18px;text-align:right;margin-left:auto}
+.rc-desc{font-size:13px;color:#675d70;line-height:1.55;margin-bottom:0.5rem}
+.rc-q{font-size:12px;color:#786d82;font-style:italic;margin-bottom:0.625rem}
+.slider-wrap input[type=range]{width:100%;accent-color:#f34900;cursor:pointer}
+.slider-labels{display:flex;justify-content:space-between;font-size:10px;color:#9b90a4;margin-top:3px}
+.live-score{background:#f1e8f8;border-radius:10px;padding:0.75rem 1rem;text-align:center;margin-top:0.75rem}
+.ls-label{font-size:12px;color:#f34900;font-weight:500;margin-bottom:2px}
+.ls-val{font-size:22px;font-weight:700;color:#2b0956}
 /* Step 3: checklist */
 .cl-cols{display:grid;grid-template-columns:1fr 1fr;gap:0.875rem}
 @media(max-width:540px){.cl-cols{grid-template-columns:1fr}}
@@ -67,22 +80,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,san
 .cl-hdr.risk{background:#FEE2E2;color:#7F1D1D}
 .cl-item{display:flex;align-items:flex-start;gap:0.5rem;padding:0.5rem 0;border-bottom:1px solid #f0f4f8}
 .cl-item:last-child{border-bottom:none}
-.cl-item input[type=checkbox]{margin-top:2px;accent-color:#2E75B6;width:14px;height:14px;flex-shrink:0;cursor:pointer}
-.cl-item label{font-size:13px;color:#4a5568;line-height:1.5;cursor:pointer}
+.cl-item input[type=checkbox]{margin-top:2px;accent-color:#f34900;width:14px;height:14px;flex-shrink:0;cursor:pointer}
+.cl-item label{font-size:13px;color:#675d70;line-height:1.5;cursor:pointer}
 /* Step 4: questions */
 .q-card{background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;padding:1.125rem 1.25rem;margin-bottom:0.75rem;transition:border-color 0.2s}
-.q-card.q-special{border-color:#2E75B6;background:#F0F7FF}
-.q-num{font-size:11px;font-weight:600;color:#a0aec0;letter-spacing:1px;text-transform:uppercase;margin-bottom:0.375rem}
-.q-num.sp{color:#2E75B6}
+.q-card.q-special{border-color:#f34900;background:#f8f3fc}
+.q-num{font-size:11px;font-weight:600;color:#9b90a4;letter-spacing:1px;text-transform:uppercase;margin-bottom:0.375rem}
+.q-num.sp{color:#f34900}
 .q-text{font-size:14px;font-weight:500;color:#1a202c;line-height:1.6;margin-bottom:0.625rem}
-.q-note{font-size:12px;color:#2E75B6;font-style:italic;margin-bottom:0.5rem}
-textarea{width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:0.625rem 0.75rem;font-size:13px;font-family:inherit;color:#4a5568;resize:vertical;min-height:72px;line-height:1.6;transition:border-color 0.15s}
-textarea:focus{outline:none;border-color:#2E75B6}
+.q-note{font-size:12px;color:#f34900;font-style:italic;margin-bottom:0.5rem}
+textarea{width:100%;border:1px solid #ded3ea;border-radius:8px;padding:0.625rem 0.75rem;font-size:13px;font-family:inherit;color:#675d70;resize:vertical;min-height:72px;line-height:1.6;transition:border-color 0.15s}
+textarea:focus{outline:none;border-color:#f34900}
 /* Step 5: bo cuoc types */
 .bc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;margin-top:0.875rem}
 @media(max-width:580px){.bc-grid{grid-template-columns:1fr}}
 .bc-type{border-radius:12px;padding:1.125rem}
-.bc-type.t-gray{background:#F1F5F9;border:1.5px solid #E2E8F0}
+.bc-type.t-gray{background:#f3eef8;border:1.5px solid #ded3ea}
 .bc-type.t-green{background:#F0FDF4;border:1.5px solid #86EFAC}
 .bc-type.t-red{background:#FFF1F2;border:1.5px solid #FECDD3}
 .bc-icon{font-size:22px;margin-bottom:0.5rem}
@@ -101,23 +114,23 @@ textarea:focus{outline:none;border-color:#2E75B6}
 /* Step 6: insights */
 .ins-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
 @media(max-width:520px){.ins-grid{grid-template-columns:1fr}}
-.ins-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:1.125rem}
+.ins-card{background:#fff;border:1px solid #ded3ea;border-radius:12px;padding:1.125rem}
 .ins-icon{font-size:20px;margin-bottom:0.5rem}
-.ins-title{font-size:13px;font-weight:600;color:#1F3864;margin-bottom:0.375rem}
-.ins-desc{font-size:13px;color:#4a5568;line-height:1.55}
+.ins-title{font-size:13px;font-weight:600;color:#2b0956;margin-bottom:0.375rem}
+.ins-desc{font-size:13px;color:#675d70;line-height:1.55}
 .ins-card.wide{grid-column:span 2}
 @media(max-width:520px){.ins-card.wide{grid-column:span 1}}
 /* Step 7: result */
 .result-score{background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;padding:1.5rem;text-align:center;margin-bottom:0.875rem}
-.rs-label{font-size:13px;color:#718096;margin-bottom:0.375rem}
-.rs-num{font-size:52px;font-weight:700;color:#1F3864;line-height:1}
-.rs-out{font-size:16px;color:#a0aec0}
-.rs-bar-track{height:10px;background:#e2e8f0;border-radius:5px;margin:1rem 0 0.375rem;overflow:hidden}
+.rs-label{font-size:13px;color:#786d82;margin-bottom:0.375rem}
+.rs-num{font-size:52px;font-weight:700;color:#2b0956;line-height:1}
+.rs-out{font-size:16px;color:#9b90a4}
+.rs-bar-track{height:10px;background:#ded3ea;border-radius:5px;margin:1rem 0 0.375rem;overflow:hidden}
 .rs-bar-fill{height:10px;border-radius:5px;transition:width 1.2s ease}
-.rs-bar-labels{display:flex;justify-content:space-between;font-size:10px;color:#a0aec0}
+.rs-bar-labels{display:flex;justify-content:space-between;font-size:10px;color:#9b90a4}
 .result-card{border-radius:12px;padding:1.25rem 1.5rem;margin-bottom:0.875rem}
 .result-card.r-green{background:#F0FDF4;border:1.5px solid #86EFAC}
-.result-card.r-yellow{background:#FFFBEB;border:1.5px solid #FCD34D}
+.result-card.r-yellow{background:#fffbea;border:1.5px solid #ffc700}
 .result-card.r-red{background:#FFF1F2;border:1.5px solid #FECDD3}
 .r-icon{font-size:32px;margin-bottom:0.625rem}
 .r-title{font-size:18px;font-weight:700;margin-bottom:0.5rem}
@@ -126,52 +139,87 @@ textarea:focus{outline:none;border-color:#2E75B6}
 .result-card.r-red .r-title{color:#7F1D1D}
 .r-desc{font-size:14px;line-height:1.7}
 .result-card.r-green .r-desc{color:#166534}
-.result-card.r-yellow .r-desc{color:#92400E}
+.result-card.r-yellow .r-desc{color:#7a4b00}
 .result-card.r-red .r-desc{color:#9F1239}
 /* Next steps table */
-.next-tbl{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #e2e8f0;margin-bottom:1.25rem}
-.next-tbl th{background:#1F3864;color:#fff;padding:0.625rem 1rem;text-align:left;font-size:13px;font-weight:500}
-.next-tbl td{padding:0.625rem 1rem;font-size:13px;border-bottom:1px solid #e2e8f0;color:#4a5568}
+.next-tbl{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #ded3ea;margin-bottom:1.25rem}
+.next-tbl th{background:#2b0956;color:#fff;padding:0.625rem 1rem;text-align:left;font-size:13px;font-weight:500}
+.next-tbl td{padding:0.625rem 1rem;font-size:13px;border-bottom:1px solid #ded3ea;color:#675d70}
 .next-tbl tr:last-child td{border-bottom:none}
-.next-tbl tr:hover td{background:#f8fafc}
-.td-link{color:#2E75B6;font-weight:500}
+.next-tbl tr:hover td{background:#faf7fc}
+.td-link{color:#f34900;font-weight:500}
 /* VCS quote */
-.vcs-q{background:#1F3864;color:rgba(255,255,255,0.88);border-radius:12px;padding:1.125rem 1.25rem;font-size:14px;font-style:italic;line-height:1.7;margin-top:0.875rem}
+.vcs-q{background:#2b0956;color:rgba(255,255,255,0.88);border-radius:12px;padding:1.125rem 1.25rem;font-size:14px;font-style:italic;line-height:1.7;margin-top:0.875rem}
 /* Intro */
-.intro-qbox{background:#1F3864;color:#fff;border-radius:12px;padding:1.5rem;margin-bottom:1rem}
+.intro-qbox{background:#2b0956;color:#fff;border-radius:12px;padding:1.5rem;margin-bottom:1rem}
 .iq-text{font-size:17px;font-weight:500;line-height:1.4;opacity:0.92}
 .iq-sep{border:none;border-top:1px solid rgba(255,255,255,0.15);margin:0.75rem 0}
-.intro-note{font-size:14px;color:#4a5568;line-height:1.7;margin-bottom:0.875rem}
-.start-btn{display:block;width:100%;padding:0.875rem;background:#2E75B6;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:500;cursor:pointer;text-align:center;font-family:inherit;transition:background 0.2s;margin-top:0.25rem}
-.start-btn:hover{background:#1F3864}
-.overview-box{background:#FFFBEB;border:1px solid #FCD34D;border-radius:10px;padding:0.875rem 1rem;margin-bottom:1rem}
+.intro-note{font-size:14px;color:#675d70;line-height:1.7;margin-bottom:0.875rem}
+.start-btn{display:block;width:100%;padding:0.875rem;background:#f34900;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:500;cursor:pointer;text-align:center;font-family:inherit;transition:background 0.2s;margin-top:0.25rem}
+.start-btn:hover{background:#2b0956}
+.overview-box{background:#fffbea;border:1px solid #ffc700;border-radius:10px;padding:0.875rem 1rem;margin-bottom:1rem}
 .ob-title{font-size:12px;font-weight:600;color:#78350F;margin-bottom:0.375rem}
-.ob-steps{font-size:13px;color:#92400E;line-height:1.8}
+.ob-steps{font-size:13px;color:#7a4b00;line-height:1.8}
 /* Nav bar */
-.nav-bar{position:sticky;bottom:0;background:#fff;border-top:1px solid #e2e8f0;padding:0.875rem 0;display:flex;justify-content:space-between;align-items:center;z-index:100;margin-top:1.5rem}
+.nav-bar{position:sticky;bottom:0;background:#fff;border-top:1px solid #ded3ea;padding:0.875rem 0;display:flex;justify-content:space-between;align-items:center;z-index:100;margin-top:1.5rem}
 .nav-btn{padding:0.5rem 1.25rem;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;border:none;font-family:inherit;transition:all 0.15s}
-.nav-btn.sec{background:#f0f4f8;color:#4a5568;border:1px solid #e2e8f0}
-.nav-btn.sec:hover:not(:disabled){background:#e2e8f0}
-.nav-btn.pri{background:#1F3864;color:#fff}
-.nav-btn.pri:hover:not(:disabled){background:#2E75B6}
+.nav-btn.sec{background:#f7f3fb;color:#675d70;border:1px solid #ded3ea}
+.nav-btn.sec:hover:not(:disabled){background:#ded3ea}
+.nav-btn.pri{background:#2b0956;color:#fff}
+.nav-btn.pri:hover:not(:disabled){background:#f34900}
 .nav-btn:disabled{opacity:0.35;cursor:not-allowed}
-.nav-ctr{font-size:12px;color:#a0aec0}
+.nav-ctr{font-size:12px;color:#9b90a4}
 /* Notice box */
-.notice{background:#EFF6FF;border:1px solid #BFDBFE;border-radius:10px;padding:0.875rem 1rem;margin-top:0.75rem}
-.notice p{font-size:13px;color:#1E40AF;line-height:1.6}
+.notice{background:#f6f0fb;border:1px solid #d8c8e8;border-radius:10px;padding:0.875rem 1rem;margin-top:0.75rem}
+.notice p{font-size:13px;color:#4f2b72;line-height:1.6}
 /* Footer */
-.pb-footer{text-align:center;padding:1.5rem 0 0;border-top:1px solid #e2e8f0;margin-top:1rem}
-.pb-footer p{font-size:12px;color:#a0aec0;line-height:1.8}
+.pb-footer{text-align:center;padding:1.5rem 0 0;border-top:1px solid #ded3ea;margin-top:1rem}
+.pb-footer p{font-size:12px;color:#9b90a4;line-height:1.8}
 /* Step display: all visible by default, JS hides after load */
-.pb-step{display:block;padding-bottom:0.5rem;border-bottom:2px dashed #e2e8f0;margin-bottom:1.5rem}
+.pb-step{display:block;padding-bottom:0.5rem;border-bottom:2px dashed #ded3ea;margin-bottom:1.5rem}
 #app.ready .pb-step{display:none}
 #app.ready .pb-step.active{display:block;border-bottom:none;margin-bottom:0}
 #app.ready .nav-bar{display:flex}
 #app:not(.ready) .progress-wrap{display:none}
 #app:not(.ready) .nav-bar{display:none}
+
+/* Domain lock */
+.domain-lock{display:none;min-height:100vh;padding:28px;align-items:center;justify-content:center;background:
+radial-gradient(circle at top left,#fff9d8 0,#f7f3fb 38%,#e9def3 100%);
+font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#241532}
+.vcs-domain-locked body{margin:0;padding:0}
+.vcs-domain-locked #app{display:none!important}
+.vcs-domain-locked .domain-lock{display:flex}
+.lock-card{width:min(720px,100%);background:#fff;border:1px solid #ded3ea;border-radius:28px;box-shadow:0 26px 70px rgba(43,9,86,.18);overflow:hidden}
+.lock-band{height:10px;background:linear-gradient(90deg,#2b0956 0 72%,#ffc700 72% 90%,#f34900 90%)}
+.lock-content{padding:36px;text-align:center}
+.lock-mark{width:66px;height:66px;margin:0 auto 18px;border-radius:20px;background:linear-gradient(135deg,#2b0956,#4c1686);color:#ffc700;display:grid;place-items:center;font-size:21px;font-weight:800;letter-spacing:.04em;box-shadow:0 12px 30px rgba(43,9,86,.25)}
+.lock-content h1{margin:0 0 12px;font-size:30px;line-height:1.15;color:#2b0956}
+.lock-content p{margin:0 auto;color:#6f6478;max-width:560px;font-size:15px;line-height:1.7}
+.lock-action{display:inline-flex;align-items:center;justify-content:center;margin-top:24px;padding:14px 20px;border-radius:999px;background:#2b0956;color:#fff;text-decoration:none;font-weight:800;box-shadow:0 10px 24px rgba(43,9,86,.22);transition:.18s ease}
+.lock-action:hover{transform:translateY(-1px);background:#3a0c73}
+.lock-action:focus{outline:3px solid rgba(255,199,0,.5);outline-offset:3px}
+.lock-note{margin-top:14px!important;font-size:12px!important;color:#807487!important}
+
 </style>
 </head>
 <body>
+
+<section class="domain-lock" role="alert" aria-live="assertive">
+  <div class="lock-card">
+    <div class="lock-band"></div>
+    <div class="lock-content">
+      <div class="lock-mark">VCS</div>
+      <h1>Biểu mẫu chỉ hoạt động trên Cổng học tập</h1>
+      <p>Phiên bản này được cấp cho học viên Học viện Concepts và chỉ được phép sử dụng trên hệ thống online-vcs.edu.vn.</p>
+      <a class="lock-action" href="https://online-vcs.edu.vn/khoa-hoc/nhap-mon-kinh-doanh-fnb-lap-ke-hoach">
+        MỞ BIỂU MẪU TRÊN CỔNG HỌC TẬP
+      </a>
+      <p class="lock-note">Dữ liệu đã nhập trong trình duyệt hiện tại không được chuyển tự động sang website khác.</p>
+    </div>
+  </div>
+</section>
+
 
 <div id="app">
 
@@ -466,8 +514,8 @@ textarea:focus{outline:none;border-color:#2E75B6}
       </div>
     </div>
 
-    <div class="card" style="background:#FFFBEB;border-color:#FCD34D;margin-top:0.875rem">
-      <p style="font-size:14px;color:#92400E;line-height:1.7"><strong>Ngược lại:</strong> tiếp tục sau khi đã biết mình chưa sẵn sàng — đó mới là rủi ro thật. Người dừng lại trước khi đầu tư không phải người thua. Họ chỉ là người không chơi một ván bài mà xác suất thắng của họ quá thấp.</p>
+    <div class="card" style="background:#fffbea;border-color:#FCD34D;margin-top:0.875rem">
+      <p style="font-size:14px;color:#7a4b00;line-height:1.7"><strong>Ngược lại:</strong> tiếp tục sau khi đã biết mình chưa sẵn sàng — đó mới là rủi ro thật. Người dừng lại trước khi đầu tư không phải người thua. Họ chỉ là người không chơi một ván bài mà xác suất thắng của họ quá thấp.</p>
     </div>
   </div>
 
@@ -542,22 +590,22 @@ textarea:focus{outline:none;border-color:#2E75B6}
       <tbody>
         <tr>
           <td>Muốn hiểu ngành trước khi quyết định</td>
-          <td class="td-link"><a href="https://lo-trinh-cho-nguoi-moi.pages.dev/" target="_blank" rel="noopener" style="color:#2E75B6;text-decoration:none;font-weight:500">Playbook Lộ trình F&amp;B cho người mới ↗</a></td>
+          <td class="td-link"><a href="https://lo-trinh-cho-nguoi-moi.pages.dev/" target="_blank" rel="noopener" style="color:#f34900;text-decoration:none;font-weight:500">Playbook Lộ trình F&amp;B cho người mới ↗</a></td>
         </tr>
         <tr>
           <td>Muốn hiểu các bước tiến hành</td>
-          <td class="td-link"><a href="https://vcs-fnb-co-ban-bang-con-so.hocvienconcepts.workers.dev/" target="_blank" rel="noopener" style="color:#2E75B6;text-decoration:none;font-weight:500">Playbook Khởi nghiệp F&amp;B cơ bản bằng con số ↗</a></td>
+          <td class="td-link"><a href="https://vcs-fnb-co-ban-bang-con-so.hocvienconcepts.workers.dev/" target="_blank" rel="noopener" style="color:#f34900;text-decoration:none;font-weight:500">Playbook Khởi nghiệp F&amp;B cơ bản bằng con số ↗</a></td>
         </tr>
       </tbody>
     </table>
 
-    <div style="background:#EFF6FF;border:1.5px solid #BFDBFE;border-radius:12px;padding:1.125rem 1.25rem;margin-top:1rem">
-      <div style="font-size:12px;font-weight:700;color:#1E3A8A;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:0.625rem">Muốn đi sâu hơn?</div>
-      <p style="font-size:13px;color:#1E40AF;line-height:1.6;margin-bottom:0.75rem">
-        <a href="https://vcs.edu.vn/khoa-hoc/khoa-hoc-thuc-chien-so-0/" target="_blank" rel="noopener" style="color:#1D4ED8;font-weight:600;text-decoration:none">Khoá học thực chiến Số 0: Nền móng xây dựng mô hình kinh doanh ẩm thực (F&amp;B) tinh gọn ↗</a>
+    <div style="background:#f6f0fb;border:1.5px solid #d8c8e8;border-radius:12px;padding:1.125rem 1.25rem;margin-top:1rem">
+      <div style="font-size:12px;font-weight:700;color:#2b0956;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:0.625rem">Muốn đi sâu hơn?</div>
+      <p style="font-size:13px;color:#4f2b72;line-height:1.6;margin-bottom:0.75rem">
+        <a href="https://vcs.edu.vn/khoa-hoc/khoa-hoc-thuc-chien-so-0/" target="_blank" rel="noopener" style="color:#2b0956;font-weight:600;text-decoration:none">Khoá học thực chiến Số 0: Nền móng xây dựng mô hình kinh doanh ẩm thực (F&amp;B) tinh gọn ↗</a>
         <br>Chương trình đào tạo thực chiến giúp bạn rà nền móng, xác định mô hình đúng và tránh những sai lầm tốn kém nhất trước khi mở quán.
       </p>
-      <a href="https://www.messenger.com/t/529171340283268/?messaging_source=source%3Apages%3Amessage_shortlink&source_id=1441792&recurring_notification=0" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:0.375rem;background:#1D4ED8;color:#fff;font-size:12px;font-weight:600;padding:0.45rem 1rem;border-radius:20px;text-decoration:none">
+      <a href="https://www.messenger.com/t/529171340283268/?messaging_source=source%3Apages%3Amessage_shortlink&source_id=1441792&recurring_notification=0" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:0.375rem;background:#2b0956;color:#fff;font-size:12px;font-weight:600;padding:0.45rem 1rem;border-radius:20px;text-decoration:none">
         💬 Tư vấn lộ trình học
       </a>
     </div>
